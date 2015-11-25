@@ -1,4 +1,4 @@
-app.directive('counterSelector', function () {
+app.directive('counter', function () {
     return {
         restrict: 'E',
         templateUrl: '/directives/counter/counter.html',
@@ -8,9 +8,22 @@ app.directive('counterSelector', function () {
             step: '='
         },
         link: function (scope, element, attrs) {
+            scope.goUpOneStep = function() {
+                if(scope.quantity === null) scope.quantity = scope.min;
+                else if(scope.quantity + scope.step >= scope.max) scope.quantity = scope.max;
+                else scope.quantity = scope.options[scope.options.indexOf(scope.quantity) + 1];
+            };
+            scope.goDownOneStep = function() {
+                if(scope.quantity === null) scope.quantity = scope.min;
+                else if(scope.quantity - scope.step <= scope.min) scope.quantity = scope.min;
+                else scope.quantity = scope.options[scope.options.indexOf(scope.quantity) - 1];
+            }
             scope.quantity = null;
             scope.showInput = false;
-            scope.options = _.range(scope.min, scope.min + scope.step * 5, scope.step);
+            scope.options = _.range(scope.min, scope.max, scope.step);
+            if(scope.options.indexOf(scope.max) === -1) {
+                scope.options.push(scope.max);
+            }
             scope.toggleInput = function() {
                 scope.showInput = true;
             }
