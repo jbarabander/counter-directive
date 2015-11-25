@@ -1,4 +1,4 @@
-app.directive('counter', function () {
+app.directive('counter', function ($location, $anchorScroll) {
     return {
         restrict: 'E',
         templateUrl: '/directives/counter/counter.html',
@@ -27,8 +27,12 @@ app.directive('counter', function () {
             scope.toggleInput = function() {
                 scope.showInput = true;
             }
-            scope.setInputTo = function(choice) {
+            scope.setInputTo = function(choice, index) {
                 scope.quantity = choice;
+                $location.hash(index);
+            }
+            scope.goToCurrentEl = function() {
+                $anchorScroll();
             }
         }
     }
