@@ -9,15 +9,31 @@ app.directive('counter', function ($location, $anchorScroll) {
         },
         link: function (scope, element, attrs) {
             scope.goUpOneStep = function() {
-                if(scope.quantity === null) scope.quantity = scope.min;
-                else if(scope.quantity + scope.step >= scope.max) scope.quantity = scope.max;
-                else scope.quantity = scope.options[scope.options.indexOf(scope.quantity) + 1];
+                if(scope.quantity === null) {
+                    scope.quantity = scope.min;
+                    $location.hash(0);
+                }
+                else if(scope.quantity + scope.step >= scope.max)  {
+                    scope.quantity = scope.max;
+                    $location.hash(scope.options.length - 1);
+                }
+                else  {
+                    var index = scope.options.indexOf(scope.quantity) + 1;
+                    scope.quantity = scope.options[index];
+                    $location.hash(index);
+                }
             };
             scope.goDownOneStep = function() {
-                if(scope.quantity === null) scope.quantity = scope.min;
-                else if(scope.quantity - scope.step <= scope.min) scope.quantity = scope.min;
-                else scope.quantity = scope.options[scope.options.indexOf(scope.quantity) - 1];
-            }
+                if(scope.quantity === null || scope.quantity - scope.step <= scope.min) {
+                    scope.quantity = scope.min;
+                    $location.hash(0);
+                }
+                else {
+                    var index = scope.options.indexOf(scope.quantity) - 1;
+                    scope.quantity = scope.options[index];
+                    $location.hash(index);
+                }
+            };
             scope.quantity = null;
             scope.showInput = false;
             scope.options = _.range(scope.min, scope.max, scope.step);
@@ -26,14 +42,14 @@ app.directive('counter', function ($location, $anchorScroll) {
             }
             scope.toggleInput = function() {
                 scope.showInput = true;
-            }
+            };
             scope.setInputTo = function(choice, index) {
                 scope.quantity = choice;
                 $location.hash(index);
-            }
+            };
             scope.goToCurrentEl = function() {
                 $anchorScroll();
-            }
+            };
         }
     }
-})
+});
