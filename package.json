@@ -1,7 +1,7 @@
 {
   "name": "ng-counter-directive",
-  "version": "1.0.0",
-  "description": "a pretty counter directive for angular",
+  "version": "1.0.1",
+  "description": "Your friend neighborhood counter directive",
   "main": "dist/build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
