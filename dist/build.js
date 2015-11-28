@@ -9,7 +9,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            templateUrl: '/src/directives/counter/counter.html',
+            templateUrl: 'ng-counter-directive/src/directives/counter/counter.html',
             scope: {
                 max: '=',
                 min: '=',
