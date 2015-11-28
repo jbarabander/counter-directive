@@ -5,9 +5,10 @@ app.directive('counter', function ($location, $anchorScroll) {
         scope: {
             max: '=',
             min: '=',
-            step: '=',
+            step: '='
         },
         link: function (scope, element, attrs) {
+            scope.dropdown = element.children()[0].lastElementChild;
             scope.currentHash = null;
             scope.goUpOneStep = function () {
                 if (scope.quantity === null) {
@@ -49,18 +50,12 @@ app.directive('counter', function ($location, $anchorScroll) {
                 scope.currentHash = index;
             };
             scope.goToCurrentEl = (function () {
-                var parent;
                 var previousIndex;
                 return function () {
-                    console.log("previousIndex", previousIndex, 'scope.currentHash', scope.currentHash);
                     if (scope.currentHash !== null && scope.currentHash !== previousIndex) {
                         previousIndex = scope.currentHash;
-                        var currentEl = document.getElementById(scope.currentHash);
-                        var topPos = currentEl.offsetTop;
-                        if(!parent) {
-                            parent = currentEl.parentNode;
-                        }
-                        parent.scrollTop = topPos;
+                        var currentEl = scope.dropdown.children[scope.currentHash];
+                        scope.dropdown.scrollTop = currentEl.offsetTop;
                     }
                 }
             })();

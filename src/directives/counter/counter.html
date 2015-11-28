@@ -15,7 +15,7 @@
         {{quantity ? quantity: 'Choose a quantity'}}
     </button><button class="btn btn-default" ng-click="goUpOneStep()">+</button>
     <ul class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button">
-        <li ng-repeat="option in options track by $index" id='{{$index}}'ng-click="setInputTo(option, $index)"><a>{{option}}</a></li>
+        <li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a>{{option}}</a></li>
         <!--<li><a ng-click="toggleInput()">Choose a quantity</a></li>-->
     </ul>
 </div>
