@@ -1,11 +1,10 @@
 {
-  "name": "counter-directive",
+  "name": "ng-counter-directive",
   "version": "1.0.0",
   "description": "a pretty counter directive for angular",
-  "main": "index.js",
+  "main": "dist/build.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/index.js"
   },
   "author": "Justin Barabander",
   "license": "ISC",
