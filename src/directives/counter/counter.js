@@ -10,6 +10,10 @@ app.directive('counter', function ($location, $anchorScroll) {
         link: function (scope, element, attrs) {
             scope.dropdown = element.children()[0].lastElementChild;
             scope.currentHash = null;
+            scope.quantity = null;
+            scope.showInput = false;
+            scope.options = _.range(scope.min, scope.max, scope.step);
+            
             scope.goUpOneStep = function () {
                 if (scope.quantity === null) {
                     scope.quantity = scope.min;
@@ -36,9 +40,6 @@ app.directive('counter', function ($location, $anchorScroll) {
                     scope.currentHash = index;
                 }
             };
-            scope.quantity = null;
-            scope.showInput = false;
-            scope.options = _.range(scope.min, scope.max, scope.step);
             if (scope.options.indexOf(scope.max) === -1) {
                 scope.options.push(scope.max);
             }
