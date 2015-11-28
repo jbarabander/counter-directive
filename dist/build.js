@@ -2,7 +2,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     module.exports = 'ng-counter-directive';
 }
 
-(function (window, angular) {
+(function (angular) {
     'use strict';
     var app = angular.module('ng-counter-directive', ['ui.bootstrap']);
 
@@ -80,4 +80,4 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
             }
         }
     });
-})(window, window.angular);
+})(window.angular);
