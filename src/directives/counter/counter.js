@@ -1,4 +1,4 @@
-app.directive('counter', function ($location, $anchorScroll) {
+app.directive('counter', function () {
     return {
         restrict: 'E',
         templateUrl: '/directives/counter/counter.html',

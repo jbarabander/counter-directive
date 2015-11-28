@@ -1,1 +1,4 @@
-var app = angular.module('counter-directive', ['ui.bootstrap']);
+(function () {
+    'use strict';
+    angular.module('ng.counterDirective', ['ui.bootstrap']);
+})();
