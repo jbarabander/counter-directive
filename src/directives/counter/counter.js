@@ -5,51 +5,65 @@ app.directive('counter', function ($location, $anchorScroll) {
         scope: {
             max: '=',
             min: '=',
-            step: '='
+            step: '=',
         },
         link: function (scope, element, attrs) {
-            scope.goUpOneStep = function() {
-                if(scope.quantity === null) {
+            scope.currentHash = null;
+            scope.goUpOneStep = function () {
+                if (scope.quantity === null) {
                     scope.quantity = scope.min;
-                    $location.hash(0);
+                    scope.currentHash = 0;
                 }
-                else if(scope.quantity + scope.step >= scope.max)  {
+                else if (scope.quantity + scope.step >= scope.max) {
                     scope.quantity = scope.max;
-                    $location.hash(scope.options.length - 1);
+                    scope.currentHash = scope.options.length - 1;
                 }
-                else  {
+                else {
                     var index = scope.options.indexOf(scope.quantity) + 1;
                     scope.quantity = scope.options[index];
-                    $location.hash(index);
+                    scope.currentHash = index;
                 }
             };
-            scope.goDownOneStep = function() {
-                if(scope.quantity === null || scope.quantity - scope.step <= scope.min) {
+            scope.goDownOneStep = function () {
+                if (scope.quantity === null || scope.quantity - scope.step <= scope.min) {
                     scope.quantity = scope.min;
-                    $location.hash(0);
+                    scope.currentHash = 0;
                 }
                 else {
                     var index = scope.options.indexOf(scope.quantity) - 1;
                     scope.quantity = scope.options[index];
-                    $location.hash(index);
+                    scope.currentHash = index;
                 }
             };
             scope.quantity = null;
             scope.showInput = false;
             scope.options = _.range(scope.min, scope.max, scope.step);
-            if(scope.options.indexOf(scope.max) === -1) {
+            if (scope.options.indexOf(scope.max) === -1) {
                 scope.options.push(scope.max);
             }
-            scope.toggleInput = function() {
+            scope.toggleInput = function () {
                 scope.showInput = true;
             };
-            scope.setInputTo = function(choice, index) {
+            scope.setInputTo = function (choice, index) {
                 scope.quantity = choice;
-                $location.hash(index);
+                scope.currentHash = index;
             };
-            scope.goToCurrentEl = function() {
-                $anchorScroll();
-            };
+            scope.goToCurrentEl = (function () {
+                var parent;
+                var previousIndex;
+                return function () {
+                    console.log("previousIndex", previousIndex, 'scope.currentHash', scope.currentHash);
+                    if (scope.currentHash !== null && scope.currentHash !== previousIndex) {
+                        previousIndex = scope.currentHash;
+                        var currentEl = document.getElementById(scope.currentHash);
+                        var topPos = currentEl.offsetTop;
+                        if(!parent) {
+                            parent = currentEl.parentNode;
+                        }
+                        parent.scrollTop = topPos;
+                    }
+                }
+            })();
         }
     }
 });
