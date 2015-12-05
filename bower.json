@@ -1,6 +1,6 @@
 {
   "name": "counter-directive",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/jbarabander/counter-directive",
   "authors": [
     "Justin Barabander <jbarabander@gmail.com>"
