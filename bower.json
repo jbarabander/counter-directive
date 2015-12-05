@@ -1,0 +1,22 @@
+{
+  "name": "counter-directive",
+  "version": "1.0.2",
+  "homepage": "https://github.com/jbarabander/counter-directive",
+  "authors": [
+    "Justin Barabander <jbarabander@gmail.com>"
+  ],
+  "description": "Your friendly neighborhood stepped counter directive",
+  "main": "dist/build.min.js",
+  "keywords": [
+    "Angular",
+    "counter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
