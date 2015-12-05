@@ -1,0 +1,28 @@
+{
+  "name": "counter-directive",
+  "version": "1.0.3",
+  "homepage": "https://github.com/jbarabander/counter-directive",
+  "authors": [
+    "Justin Barabander <jbarabander@gmail.com>"
+  ],
+  "description": "Your friendly neighborhood stepped counter directive",
+  "main": "dist/build.min.js",
+  "keywords": [
+    "Angular",
+    "counter"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.8",
+    "angular-ui-bootstrap": "~0.14.3",
+    "bootstrap": "~3.3.6",
+    "lodash": "~3.10.1"
+  }
+}
