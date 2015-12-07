@@ -9,7 +9,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            templateUrl: 'ng-counter-directive/src/directives/counter/counter.html',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="goToCurrentEl()">{{quantity ? quantity: "Choose a quantity"}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a>{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
