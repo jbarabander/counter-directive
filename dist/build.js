@@ -13,7 +13,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
             scope: {
                 max: '=',
                 min: '=',
-                step: '='
+                step: '=',
+                model: '='
             },
             link: function (scope, element, attrs) {
                 scope.dropdown = element.children()[0].lastElementChild;
@@ -38,7 +39,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
                 scope.goUpOneStep = function () {
                     if (scope.quantity === null) {
-                        setIndexAndQuantity(scope.min, 0);
+                        setIndexAndQuantity(scope.min, 1);
                     }
                     else if (willGoAboveMax()) {
                         setIndexAndQuantity(scope.max, scope.options.length - 1);
@@ -50,7 +51,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 };
                 scope.goDownOneStep = function () {
                     if (scope.quantity === null || willGoBelowMin()) {
-                        setIndexAndQuantity(scope.min, 0);
+                        setIndexAndQuantity(0, 0);
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) - 1;
