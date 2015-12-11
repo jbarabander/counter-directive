@@ -1,6 +1,6 @@
 {
   "name": "ng-counter-directive",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Your friend neighborhood counter directive",
   "main": "dist/build.js",
   "scripts": {
@@ -11,6 +11,7 @@
   "dependencies": {
     "angular": "^1.4.8",
     "angular-ui-bootstrap": "^0.14.3",
+    "angular-vs-repeat": "^1.0.0-beta.1",
     "bootstrap": "^3.3.5",
     "lodash": "^3.10.1"
   }

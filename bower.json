@@ -1,6 +1,6 @@
 {
   "name": "counter-directive",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "homepage": "https://github.com/jbarabander/counter-directive",
   "authors": [
     "Justin Barabander <jbarabander@gmail.com>"
@@ -23,6 +23,7 @@
     "angular": "~1.4.8",
     "angular-ui-bootstrap": "~0.14.3",
     "bootstrap": "~3.3.6",
-    "lodash": "~3.10.1"
+    "lodash": "~3.10.1",
+    "angular-vs-repeat": "~1.0.0-rc9"
   }
 }
