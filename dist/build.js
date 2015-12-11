@@ -14,15 +14,19 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 max: '=',
                 min: '=',
                 step: '=',
-                model: '='
+                quantity: '='
             },
             link: function (scope, element, attrs) {
                 scope.dropdown = element.children()[0].lastElementChild;
                 scope.currentIndex = null;
-                scope.quantity = null;
                 scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
-
+                if(scope.min > 0) {
+                    scope.options.unshift(0);
+                }
+                if(scope.min >= 0) {
+                    scope.quantity = 0;
+                }
                 //helper functions
                 function setIndexAndQuantity(quantity, index) {
                     scope.quantity = quantity;
@@ -51,7 +55,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 };
                 scope.goDownOneStep = function () {
                     if (scope.quantity === null || willGoBelowMin()) {
-                        setIndexAndQuantity(0, 0);
+                        setIndexAndQuantity(0, scope.min < 0 ? scope.min : 0);
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) - 1;
@@ -72,6 +76,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     var previousIndex;
                     return function () {
                         if (scope.currentIndex !== null && scope.currentIndex !== previousIndex) {
+                            console.log(scope.dropdown.children);
+                            console.log(scope.currentIndex);
                             previousIndex = scope.currentHash;
                             var currentEl = scope.dropdown.children[scope.currentIndex];
                             scope.dropdown.scrollTop = currentEl.offsetTop;

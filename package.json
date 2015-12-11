@@ -1,6 +1,6 @@
 {
   "name": "ng-counter-directive",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Your friend neighborhood counter directive",
   "main": "dist/build.js",
   "scripts": {
