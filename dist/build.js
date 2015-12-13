@@ -9,15 +9,20 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="goToCurrentEl()">{{quantity ? quantity: "Choose a quantity"}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a>{{option}}</a></li></ul></div>',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="goToCurrentEl()">{{quantity ? quantity: "Choose a quantity"}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index, $event)"><a ng-style="style">{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
                 step: '=',
-                quantity: '='
+                quantity: '=',
+                cellHeight: '@'
             },
             link: function (scope, element, attrs) {
+                scope.elementHeight = scope.cellHeight ? scope.cellHeight : 26;
+
+                scope.style = {'height': scope.elementHeight + 'px !important'};
                 scope.dropdown = element.children()[0].lastElementChild;
+                // scope.elementHeight;
                 scope.currentIndex = null;
                 scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
@@ -26,8 +31,17 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 }
                 if(scope.min >= 0) {
                     scope.quantity = 0;
+                } //FIXME
+                scope.setNewScrollTop = function(quantity) {
+                    scope.dropdown.scrollTop = ((scope.quantity - scope.min) / scope.step) * scope.elementHeight;
                 }
-                //helper functions
+                ////helper functions////
+                function setElementHeight(event) {
+                    if(!scope.elementHeight) {
+                        scope.elementHeight = event.target.offsetHeight;
+                    }
+                }
+
                 function setIndexAndQuantity(quantity, index) {
                     scope.quantity = quantity;
                     scope.currentIndex = index;
@@ -68,19 +82,22 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 scope.toggleInput = function () {
                     scope.showInput = true;
                 };
-                scope.setInputTo = function (choice, index) {
+                scope.setInputTo = function (choice, index, $event) {
+                    setElementHeight($event);                
                     scope.quantity = choice;
                     scope.currentIndex = index;
                 };
                 scope.goToCurrentEl = (function () {
                     var previousIndex;
+                    var elementHeight;
                     return function () {
+                        if(!elementHeight) elementHeight
                         if (scope.currentIndex !== null && scope.currentIndex !== previousIndex) {
                             console.log(scope.dropdown.children);
                             console.log(scope.currentIndex);
                             previousIndex = scope.currentHash;
                             var currentEl = scope.dropdown.children[scope.currentIndex];
-                            scope.dropdown.scrollTop = currentEl.offsetTop;
+                            scope.setNewScrollTop()
                         }
                     }
                 })();
