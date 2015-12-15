@@ -9,16 +9,21 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="goToCurrentEl()">{{quantity ? quantity: "Choose a quantity"}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a>{{option}}</a></li></ul></div>',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantity ? quantity: "Choose a quantity"}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index, $event)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
                 step: '=',
-                quantity: '='
+                quantity: '=',
+                cellHeight: '@'
             },
             link: function (scope, element, attrs) {
+                scope.elementHeight = scope.cellHeight ? scope.cellHeight : 26;
+
+                scope.style = {'height': scope.elementHeight + 'px'};
                 scope.dropdown = element.children()[0].lastElementChild;
-                scope.currentIndex = null;
+                // scope.elementHeight;
+                // scope.currentIndex = null;
                 scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
                 if(scope.min > 0) {
@@ -26,11 +31,24 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 }
                 if(scope.min >= 0) {
                     scope.quantity = 0;
+                } //FIXME
+                scope.setNewScrollTop = function(quantity) {
+                    scope.dropdown.scrollTop = ((scope.quantity - scope.min) / scope.step) * scope.elementHeight;
                 }
-                //helper functions
-                function setIndexAndQuantity(quantity, index) {
+                ////helper functions////
+                function setElementHeight(event) {
+                    if(!scope.elementHeight) {
+                        scope.elementHeight = event.target.offsetHeight;
+                    }
+                }
+
+                // function setIndexAndQuantity(quantity, index) {
+                //     scope.quantity = quantity;
+                //     scope.currentIndex = index;
+                // }
+                function setQuantity(quantity) {
                     scope.quantity = quantity;
-                    scope.currentIndex = index;
+                    // scope.currentIndex = index;
                 }
 
                 function willGoAboveMax() {
@@ -43,23 +61,23 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
                 scope.goUpOneStep = function () {
                     if (scope.quantity === null) {
-                        setIndexAndQuantity(scope.min, 1);
+                        setQuantity(scope.min);
                     }
                     else if (willGoAboveMax()) {
-                        setIndexAndQuantity(scope.max, scope.options.length - 1);
+                        setQuantity(scope.max);
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) + 1;
-                        setIndexAndQuantity(scope.options[index], index);
+                        setQuantity(scope.options[index]);
                     }
                 };
                 scope.goDownOneStep = function () {
                     if (scope.quantity === null || willGoBelowMin()) {
-                        setIndexAndQuantity(0, scope.min < 0 ? scope.min : 0);
+                        setQuantity(scope.min < 0 ? scope.min : 0);
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) - 1;
-                        setIndexAndQuantity(scope.options[index], index);
+                        setQuantity(scope.options[index]);
                     }
                 };
                 if (scope.options.indexOf(scope.max) === -1) {
@@ -68,22 +86,24 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 scope.toggleInput = function () {
                     scope.showInput = true;
                 };
-                scope.setInputTo = function (choice, index) {
+                scope.setInputTo = function (choice, index, $event) {
+                    // setElementHeight($event);                
                     scope.quantity = choice;
                     scope.currentIndex = index;
                 };
-                scope.goToCurrentEl = (function () {
-                    var previousIndex;
-                    return function () {
-                        if (scope.currentIndex !== null && scope.currentIndex !== previousIndex) {
-                            console.log(scope.dropdown.children);
-                            console.log(scope.currentIndex);
-                            previousIndex = scope.currentHash;
-                            var currentEl = scope.dropdown.children[scope.currentIndex];
-                            scope.dropdown.scrollTop = currentEl.offsetTop;
-                        }
-                    }
-                })();
+                // scope.goToCurrentEl = (function () {
+                //     var previousIndex;
+                //     // var elementHeight;
+                //     return function () {
+                //         // if (scope.currentIndex !== null && scope.currentIndex !== previousIndex) {
+                //         //     console.log(scope.dropdown.children);
+                //         //     // console.log(scope.currentIndex);
+                //         //     previousIndex = scope.currentHash;
+                //         //     // var currentEl = scope.dropdown.children[scope.currentIndex];
+                //             scope.setNewScrollTop()
+                //         // }
+                //     }
+                // })();
             }
         }
     });
