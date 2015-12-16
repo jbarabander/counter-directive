@@ -20,8 +20,8 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
             },
             link: function (scope, element, attrs) {
                 console.log(Boolean(scope.minClears))
-                scope.elementHeight = scope.cellHeight ? scope.cellHeight : 26;
-                scope.style = {'height': scope.elementHeight + 'px'};
+                scope.elementHeight = scope.cellHeight ? scope.cellHeight : '26px';
+                scope.style = {'height': scope.elementHeight};
                 scope.dropdown = element.children()[0].lastElementChild;
                 // scope.elementHeight;
                 // scope.currentIndex = null;
@@ -89,9 +89,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 if (scope.options.indexOf(scope.max) === -1) {
                     scope.options.push(scope.max);
                 }
-                scope.toggleInput = function () {
-                    scope.showInput = true;
-                };
                 scope.setInputTo = function (choice) {
                     if(choice === scope.min && Boolean(scope.minClears)) {
                         scope.quantity = null;

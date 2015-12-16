@@ -22,7 +22,7 @@ To set the min value of the directive as a clearing point simply set the min-cle
 ##!!IMPORTANT!!
 In order to change the height of the list items please do not set them with css, instead use the attribute cell-height on the counter-directive to change it.  Like so:
 ```html
-<counter step='1' max='100' min='0' cell-height='32'></counter>
+<counter step='1' max='100' min='0' cell-height='32px'></counter>
 ```
 This is done to ensure that autoscrolling works consistently (i.e. when you open the dropdown the topmost element in view will be the one that is currently selected.
 
