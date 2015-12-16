@@ -27,12 +27,13 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 // scope.currentIndex = null;
                 scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
-                if(scope.min > 0) {
-                    scope.options.unshift(0);
-                }
-                if(scope.min >= 0) {
-                    scope.quantity = 0;
-                } //FIXME
+                // if(scope.min > 0) {
+                //     scope.options.unshift(0);
+                // }
+                // if(scope.min >= 0) {
+                //     scope.quantity = 0;
+                // } //FIXME
+
                 scope.setNewScrollTop = function(quantity) {
                     scope.dropdown.scrollTop = ((scope.quantity - scope.min) / scope.step) * scope.elementHeight;
                 }
@@ -75,6 +76,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 scope.goDownOneStep = function () {
                     if (scope.quantity === null || willGoBelowMin()) {
                         setQuantity(Boolean(scope.minClears) ? null : scope.min);
+                        scope.dropdown.scrollTop = 0;
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) - 1;
@@ -88,8 +90,14 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     scope.showInput = true;
                 };
                 scope.setInputTo = function (choice) {
+                    if(choice === scope.min && Boolean(scope.minClears)) {
+                        scope.quantity = null;
+                        scope.dropdown.scrollTop = 0;
+                    } else {
+                        scope.quantity = choice;
+                    }
                     // setElementHeight($event);                
-                    scope.quantity = choice;
+                    
                 };
                 // scope.goToCurrentEl = (function () {
                 //     var previousIndex;
