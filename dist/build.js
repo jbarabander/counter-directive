@@ -5,6 +5,36 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 (function (angular) {
     'use strict';
     var app = angular.module('ng-counter-directive', ['ui.bootstrap', 'vs-repeat']);
+    
+    app.factory('EventFactory', function() {
+        function EventEmitter() {
+            this.registry = {};
+        }
+
+        EventEmitter.prototype.on = function(name, cb) {
+            if(this.registry[name]) {
+                this.registry[name] = [];
+            }
+            this.registry[name].push(cb);
+        }
+
+        EventEmitter.prototype.emit = function(name) {
+            var args = Array.prototype.slice.call(arguments,1);
+            for(let i = 0; i < this.registry[name].length; i++) {
+                this.registry[name][i].apply(this, args);
+            }
+        }
+        
+        EventEmitter.prototype.remove = function(name, cb) {
+            for(var i = 0; i < this.registry[name].length; i++) {
+                if(this.registry[name][i] === cb) {
+                    this.registry[name].splice(i, 1);
+                }
+            }
+        }
+
+        return EventEmitter;
+    })
 
     app.directive('counter', function () {
         return {
