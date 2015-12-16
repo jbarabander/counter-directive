@@ -13,6 +13,11 @@ and voila! you have a nice counter dropdown.  Of course you will likely want to 
 ```html
 <counter step='1' max='100' min='0' quantity='myModel.quantity'></counter>
 ```
+Sometimes you wish to have a minimum quantity after which your input clears.
+To set the min value of the directive as a clearing point simply set the min-clears attribute to true like follows.
+```html
+<counter step='1' max='100' min='0' quantity='myModel.quantity' min-clears='true'></counter>
+```
 
 ##!!IMPORTANT!!
 In order to change the height of the list items please do not set them with css, instead use the attribute cell-height on the counter-directive to change it.  Like so:
