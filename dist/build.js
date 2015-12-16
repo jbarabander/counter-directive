@@ -39,7 +39,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            template: '<div class="btn-group" uib-dropdown is-open="status.isopen" ng-show="!showInput"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? "Choose a quantity": quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? "Choose a quantity": quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
@@ -59,7 +59,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 scope.quantityIsNonZeroFalsey = function() {
                     return scope.quantity === null || scope.quantity === undefined;
                 }
-                scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
 
                 // if(scope.min > 0) {
@@ -82,14 +81,26 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 // function setIndexAndQuantity(quantity, index) {
                 //     scope.quantity = quantity;
                 //     scope.currentIndex = index;
-                // }
+                // }                
                 function convertToPixels(height) {
-                    if(height.indexOf('px') !== -1) {
-                        return parseFloat(height.replace('px', ''));
-                    } else if(height.indexOf('em') !== -1) {
-                        return 16 * parseFloat(height.replace('em', ''));
-                    } else if(height.indexOf('pt') !== -1) {
-                        return .75 * parseFloat(height.replace('pt', ''));
+                    var pxRegex = /^\d*\.*\d+px$/;
+                    // var emRegex = /^\d*\.*\d+em$/;
+                    var ptRegex = /^\d*\.*\d+pt$/;
+                    var cmRegex = /^\d*\.*\d+cm$/;
+                    var inRegex = /^\d*\.*\d+in$/;
+                    var pcRegex = /^\d*\.*\d+pc$/;
+                    if(pxRegex.test(height)) {
+                        return Math.round(parseFloat(height.replace('px', '')));
+                    // } else if(emRegex.test(height)) {
+                    //     return Math.round(16 * parseFloat(height.replace('em', '')));
+                    } else if(ptRegex.test(height)) {
+                        return Math.round((4/3) * parseFloat(height.replace('pt', '')));
+                    } else if(cmRegex.test(height)) {
+                        return Math.round(37.8 * parseFloat(height.replace('cm', '')));
+                    } else if(inRegex.test(height)) {
+                        return Math.round(96 * parseFloat(height.replace('in', '')));
+                    } else if(pcRegex.test(height)) {
+                        return Math.round(12 * parseFloat(height.replace('pc', '')));
                     }
                     return parseFloat(height);
                 }
