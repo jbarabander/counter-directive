@@ -10,7 +10,7 @@ counter-directive is very simple to use.  You simply inject ng-counter-directive
 <counter step='1' max='100' min='0'></counter>
 ```
 and voila! you have a nice counter dropdown.  Of course you will likely want to connect this with an ng-model.  Using the attribute quantity you can do just that:
-```
+```html
 <counter step='1' max='100' min='0' quantity='myModel.quantity'></counter>
 ```
 
