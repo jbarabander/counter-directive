@@ -20,11 +20,11 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
         EventEmitter.prototype.emit = function(name) {
             var args = Array.prototype.slice.call(arguments,1);
-            for(let i = 0; i < this.registry[name].length; i++) {
+            for(var i = 0; i < this.registry[name].length; i++) {
                 this.registry[name][i].apply(this, args);
             }
         }
-        
+
         EventEmitter.prototype.remove = function(name, cb) {
             for(var i = 0; i < this.registry[name].length; i++) {
                 if(this.registry[name][i] === cb) {
@@ -46,20 +46,22 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 step: '=',
                 quantity: '=',
                 cellHeight: '@',
-                minClears: '@'
             },
             link: function (scope, element, attrs) {
-                console.log(Boolean(scope.minClears))
-                scope.elementHeight = scope.cellHeight ? scope.cellHeight : '26px';
-                scope.style = {'height': scope.elementHeight};
+                attrs.$observe('minClears', function(value) {
+                    scope.minClears = true;
+                })
+
+                scope.elementHeight = convertToPixels(scope.cellHeight) ? convertToPixels(scope.cellHeight) : 26;
+                scope.style = {'height': scope.elementHeight + 'px'};
                 scope.dropdown = element.children()[0].lastElementChild;
                 // scope.elementHeight;
-                // scope.currentIndex = null;
                 scope.quantityIsNonZeroFalsey = function() {
                     return scope.quantity === null || scope.quantity === undefined;
                 }
                 scope.showInput = false;
                 scope.options = _.range(scope.min, scope.max, scope.step);
+
                 // if(scope.min > 0) {
                 //     scope.options.unshift(0);
                 // }
@@ -67,20 +69,30 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 //     scope.quantity = 0;
                 // } //FIXME
 
-                scope.setNewScrollTop = function(quantity) {
+                scope.setNewScrollTop = function() {
                     scope.dropdown.scrollTop = ((scope.quantity - scope.min) / scope.step) * scope.elementHeight;
                 }
                 ////helper functions////
-                function setElementHeight(event) {
-                    if(!scope.elementHeight) {
-                        scope.elementHeight = event.target.offsetHeight;
-                    }
-                }
+                // function setElementHeight(event) {
+                //     if(!scope.elementHeight) {
+                //         scope.elementHeight = event.target.offsetHeight;
+                //     }
+                // }
 
                 // function setIndexAndQuantity(quantity, index) {
                 //     scope.quantity = quantity;
                 //     scope.currentIndex = index;
                 // }
+                function convertToPixels(height) {
+                    if(height.indexOf('px') !== -1) {
+                        return parseFloat(height.replace('px', ''));
+                    } else if(height.indexOf('em') !== -1) {
+                        return 16 * parseFloat(height.replace('em', ''));
+                    } else if(height.indexOf('pt') !== -1) {
+                        return .75 * parseFloat(height.replace('pt', ''));
+                    }
+                    return parseFloat(height);
+                }
                 function setQuantity(quantity) {
                     scope.quantity = quantity;
                     // scope.currentIndex = index;
@@ -96,7 +108,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 
                 scope.goUpOneStep = function () {
                     if (scope.quantity === null || scope.quantity === undefined) {
-                        setQuantity(Boolean(scope.minClears) ? scope.min + scope.step : scope.min);
+                        setQuantity(scope.minClears ? scope.min + scope.step : scope.min);
                     }
                     else if (willGoAboveMax()) {
                         setQuantity(scope.max);
@@ -108,7 +120,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 };
                 scope.goDownOneStep = function () {
                     if (scope.quantity === null || scope.quantity === undefined || willGoBelowMin()) {
-                        setQuantity(Boolean(scope.minClears) ? null : scope.min);
+                        setQuantity(scope.minClears ? null : scope.min);
                         scope.dropdown.scrollTop = 0;
                     }
                     else {
@@ -120,28 +132,14 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     scope.options.push(scope.max);
                 }
                 scope.setInputTo = function (choice) {
-                    if(choice === scope.min && Boolean(scope.minClears)) {
+                    if(choice === scope.min && scope.minClears) {
                         scope.quantity = null;
                         scope.dropdown.scrollTop = 0;
                     } else {
                         scope.quantity = choice;
                     }
-                    // setElementHeight($event);                
                     
                 };
-                // scope.goToCurrentEl = (function () {
-                //     var previousIndex;
-                //     // var elementHeight;
-                //     return function () {
-                //         // if (scope.currentIndex !== null && scope.currentIndex !== previousIndex) {
-                //         //     console.log(scope.dropdown.children);
-                //         //     // console.log(scope.currentIndex);
-                //         //     previousIndex = scope.currentHash;
-                //         //     // var currentEl = scope.dropdown.children[scope.currentIndex];
-                //             scope.setNewScrollTop()
-                //         // }
-                //     }
-                // })();
             }
         }
     });
