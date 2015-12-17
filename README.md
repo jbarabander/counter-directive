@@ -14,9 +14,9 @@ and voila! you have a nice counter dropdown.  Of course you will likely want to 
 <counter step='1' max='100' min='0' quantity='myModel.quantity'></counter>
 ```
 Sometimes you wish to have a minimum quantity after which your input clears.
-To set the min value of the directive as a clearing point simply set the min-clears attribute to true like follows.
+To set the min value of the directive as a clearing point simply put in the min-clears attribute on the counter.
 ```html
-<counter step='1' max='100' min='0' quantity='myModel.quantity' min-clears='true'></counter>
+<counter step='1' max='100' min='0' quantity='myModel.quantity' min-clears></counter>
 ```
 
 ##!!IMPORTANT!!
