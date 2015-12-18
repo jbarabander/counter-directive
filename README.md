@@ -16,8 +16,16 @@ and voila! you have a nice counter dropdown.  Of course you will likely want to 
 Sometimes you wish to have a minimum quantity after which your input clears.
 To set the min value of the directive as a clearing point simply put in the min-clears attribute on the counter.
 ```html
-<counter step='1' max='100' min='0' quantity='myModel.quantity' min-clears></counter>
+<counter step='1' max='50' min='1' quantity='myModel.quantity' clears='Remove Quantity'></counter>
 ```
+If the property clears is not on the directive the quantity will not clear after setting it for the first time.
+If clears is present without a value then the quantity will clear on the minimum you specified.  If you clears is present with a value then it will add that value as the first entry of your dropdown. 
+
+You can also specify the message that is displayed when there is no quantity like so:
+```html
+<counter step='1' max='76' min='0' quantity='myModel.quantity' message='"Please select a quantity"'></counter>
+```
+If not specified it defaults to 'Choose a quantity'
 
 ##!!IMPORTANT!!
 In order to change the height of the list items please do not set them with css, instead use the attribute cell-height on the counter-directive to change it.  Like so:
