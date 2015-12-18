@@ -6,51 +6,69 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     'use strict';
     var app = angular.module('ng-counter-directive', ['ui.bootstrap', 'vs-repeat']);
     
-    app.factory('EventFactory', function() {
-        function EventEmitter() {
-            this.registry = {};
-        }
+    // app.factory('EventFactory', function() {
+    //     function EventEmitter() {
+    //         this.registry = {};
+    //     }
 
-        EventEmitter.prototype.on = function(name, cb) {
-            if(this.registry[name]) {
-                this.registry[name] = [];
-            }
-            this.registry[name].push(cb);
-        }
+    //     EventEmitter.prototype.on = function(name, cb) {
+    //         if(this.registry[name]) {
+    //             this.registry[name] = [];
+    //         }
+    //         this.registry[name].push(cb);
+    //     }
 
-        EventEmitter.prototype.emit = function(name) {
-            var args = Array.prototype.slice.call(arguments,1);
-            for(var i = 0; i < this.registry[name].length; i++) {
-                this.registry[name][i].apply(this, args);
-            }
-        }
+    //     EventEmitter.prototype.emit = function(name) {
+    //         var args = Array.prototype.slice.call(arguments,1);
+    //         for(var i = 0; i < this.registry[name].length; i++) {
+    //             this.registry[name][i].apply(this, args);
+    //         }
+    //     }
 
-        EventEmitter.prototype.remove = function(name, cb) {
-            for(var i = 0; i < this.registry[name].length; i++) {
-                if(this.registry[name][i] === cb) {
-                    this.registry[name].splice(i, 1);
-                }
-            }
-        }
+    //     EventEmitter.prototype.remove = function(name, cb) {
+    //         for(var i = 0; i < this.registry[name].length; i++) {
+    //             if(this.registry[name][i] === cb) {
+    //                 this.registry[name].splice(i, 1);
+    //             }
+    //         }
+    //     }
 
-        return EventEmitter;
-    })
+    //     return EventEmitter;
+    // })
 
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            template: '<div class="btn-group" uib-dropdown is-open="status.isopen"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? "Choose a quantity": quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? "Choose a quantity": quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
                 step: '=',
                 quantity: '=',
                 cellHeight: '@',
+                clears: '@'
             },
             link: function (scope, element, attrs) {
-                attrs.$observe('minClears', function(value) {
-                    scope.minClears = true;
-                })
+                scope.clearsIsBlank = scope.clears === '';
+                scope.clearsIsUndef = scope.clears === undefined;
+
+                scope.scrollOffset = 0;
+                scope.minClear = false;
+                if(scope.clearsIsBlank) {
+                    scope.minClear = true;
+                } else if(!scope.clearsIsUndef) {
+                    scope.scrollOffset = 1;
+                }
+                // if(scope.minClears !== undefined) {
+                //     scope.clearVal = scope.minClears;
+                // }
+                // console.log(attrs.minClears);
+                // console.log(attrs.hi);
+                // attrs.$observe('minClears', function(value) {
+                //     scope.clearVal = value;
+                //     if(scope.clearVal) scope.scrollOffset = 1;
+                //     scope.minClear = !scope.clearVal;
+                // })
 
                 scope.elementHeight = convertToPixels(scope.cellHeight) ? convertToPixels(scope.cellHeight) : 26;
                 scope.style = {'height': scope.elementHeight + 'px'};
@@ -59,7 +77,11 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 scope.quantityIsNonZeroFalsey = function() {
                     return scope.quantity === null || scope.quantity === undefined;
                 }
+
                 scope.options = _.range(scope.min, scope.max, scope.step);
+                if(!scope.clearsIsBlank && !scope.clearsIsUndef) {
+                    scope.options.unshift(scope.clears);
+                }
 
                 // if(scope.min > 0) {
                 //     scope.options.unshift(0);
@@ -69,19 +91,9 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 // } //FIXME
 
                 scope.setNewScrollTop = function() {
-                    scope.dropdown.scrollTop = ((scope.quantity - scope.min) / scope.step) * scope.elementHeight;
+                    scope.dropdown.scrollTop = scope.quantityIsNonZeroFalsey() ? 0 : ((scope.quantity - scope.min + scope.scrollOffset) / scope.step) * scope.elementHeight;
                 }
-                ////helper functions////
-                // function setElementHeight(event) {
-                //     if(!scope.elementHeight) {
-                //         scope.elementHeight = event.target.offsetHeight;
-                //     }
-                // }
-
-                // function setIndexAndQuantity(quantity, index) {
-                //     scope.quantity = quantity;
-                //     scope.currentIndex = index;
-                // }                
+                ////helper functions////       
                 function convertToPixels(height) {
                     var pxRegex = /^\d*\.*\d+px$/;
                     // var emRegex = /^\d*\.*\d+em$/;
@@ -104,10 +116,7 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     }
                     return parseFloat(height);
                 }
-                function setQuantity(quantity) {
-                    scope.quantity = quantity;
-                    // scope.currentIndex = index;
-                }
+
 
                 function willGoAboveMax() {
                     return scope.quantity + scope.step >= scope.max;
@@ -118,34 +127,31 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 }
 
                 scope.goUpOneStep = function () {
-                    if (scope.quantity === null || scope.quantity === undefined) {
-                        setQuantity(scope.minClears ? scope.min + scope.step : scope.min);
+                    if (scope.quantityIsNonZeroFalsey()) {
+                        scope.quantity = scope.minClear ? scope.min + scope.step : scope.min;
                     }
                     else if (willGoAboveMax()) {
-                        setQuantity(scope.max);
+                        scope.quantity = scope.max;
                     }
                     else {
                         var index = scope.options.indexOf(scope.quantity) + 1;
-                        setQuantity(scope.options[index]);
+                        scope.quantity = scope.options[index];
                     }
                 };
                 scope.goDownOneStep = function () {
-                    if (scope.quantity === null || scope.quantity === undefined || willGoBelowMin()) {
-                        setQuantity(scope.minClears ? null : scope.min);
-                        scope.dropdown.scrollTop = 0;
-                    }
-                    else {
+                    if (scope.quantityIsNonZeroFalsey() || willGoBelowMin()) {
+                        scope.quantity = (!scope.clearsIsBlank && !scope.clearsIsUndef && scope.quantity === scope.min) || scope.minClear ? null : scope.min;
+                    } else {
                         var index = scope.options.indexOf(scope.quantity) - 1;
-                        setQuantity(scope.options[index]);
+                        scope.quantity = scope.options[index];
                     }
                 };
                 if (scope.options.indexOf(scope.max) === -1) {
                     scope.options.push(scope.max);
                 }
-                scope.setInputTo = function (choice) {
-                    if(choice === scope.min && scope.minClears) {
+                scope.setInputTo = function (choice, index) {
+                    if((choice === scope.min && scope.minClear) || (!scope.minClear && !scope.clearsIsUndef && choice === scope.clears && index === 0)) {
                         scope.quantity = null;
-                        scope.dropdown.scrollTop = 0;
                     } else {
                         scope.quantity = choice;
                     }
