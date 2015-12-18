@@ -39,16 +39,18 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
     app.directive('counter', function () {
         return {
             restrict: 'E',
-            template: '<div class="btn-group" uib-dropdown is-open="status.isopen"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? "Choose a quantity": quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
+            template: '<div class="btn-group" uib-dropdown is-open="status.isopen"><button class="btn btn-default" ng-click="goDownOneStep()">-</button><button id="single-button" type="button" class="btn btn-primary text-center" uib-dropdown-toggle ng-disabled="disabled" ng-click="setNewScrollTop()">{{quantityIsNonZeroFalsey() ? message: quantity}}</button><button class="btn btn-default" ng-click="goUpOneStep()">+</button><ul vs-repeat class="uib-dropdown-menu scrollable-dropdown" role="menu" aria-labelledby="single-button"><li ng-repeat="option in options track by $index" ng-click="setInputTo(option, $index)"><a ng-style="{{style}}">{{option}}</a></li></ul></div>',
             scope: {
                 max: '=',
                 min: '=',
                 step: '=',
                 quantity: '=',
                 cellHeight: '@',
-                clears: '@'
+                clears: '@',
+                message: '='
             },
             link: function (scope, element, attrs) {
+                if(!scope.message) scope.message = 'Choose a quantity';
                 scope.clearsIsBlank = scope.clears === '';
                 scope.clearsIsUndef = scope.clears === undefined;
 
