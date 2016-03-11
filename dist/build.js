@@ -5,36 +5,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
 (function (angular) {
     'use strict';
     var app = angular.module('ng-counter-directive', ['ui.bootstrap', 'vs-repeat']);
-    
-    // app.factory('EventFactory', function() {
-    //     function EventEmitter() {
-    //         this.registry = {};
-    //     }
-
-    //     EventEmitter.prototype.on = function(name, cb) {
-    //         if(this.registry[name]) {
-    //             this.registry[name] = [];
-    //         }
-    //         this.registry[name].push(cb);
-    //     }
-
-    //     EventEmitter.prototype.emit = function(name) {
-    //         var args = Array.prototype.slice.call(arguments,1);
-    //         for(var i = 0; i < this.registry[name].length; i++) {
-    //             this.registry[name][i].apply(this, args);
-    //         }
-    //     }
-
-    //     EventEmitter.prototype.remove = function(name, cb) {
-    //         for(var i = 0; i < this.registry[name].length; i++) {
-    //             if(this.registry[name][i] === cb) {
-    //                 this.registry[name].splice(i, 1);
-    //             }
-    //         }
-    //     }
-
-    //     return EventEmitter;
-    // })
 
     app.directive('counter', function () {
         return {
@@ -61,16 +31,6 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                 } else if(!scope.clearsIsUndef) {
                     scope.scrollOffset = 1;
                 }
-                // if(scope.minClears !== undefined) {
-                //     scope.clearVal = scope.minClears;
-                // }
-                // console.log(attrs.minClears);
-                // console.log(attrs.hi);
-                // attrs.$observe('minClears', function(value) {
-                //     scope.clearVal = value;
-                //     if(scope.clearVal) scope.scrollOffset = 1;
-                //     scope.minClear = !scope.clearVal;
-                // })
 
                 scope.elementHeight = convertToPixels(scope.cellHeight) ? convertToPixels(scope.cellHeight) : 26;
                 scope.style = {'height': scope.elementHeight + 'px'};
@@ -80,7 +40,16 @@ if (typeof module !== "undefined" && typeof exports !== "undefined" && module.ex
                     return scope.quantity === null || scope.quantity === undefined;
                 }
 
-                scope.options = _.range(scope.min, scope.max, scope.step);
+                function range(start, stop, step) {
+                    var rangeArr = [];
+                    var totalSteps = Math.floor((stop - start)/step);
+                    for(var i = 0; i <= totalSteps; i++) {
+                        rangeArr.push(start + step * i);
+                    }
+                    return rangeArr;
+                }
+
+                scope.options = range(scope.min, scope.max, scope.step);
                 if(!scope.clearsIsBlank && !scope.clearsIsUndef) {
                     scope.options.unshift(scope.clears);
                 }
